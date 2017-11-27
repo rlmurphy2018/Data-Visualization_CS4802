@@ -1,0 +1,34 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<link rel="stylesheet" type="text/css" href="styles.css?version=3">
+<link href="https://fonts.googleapis.com/css?family=Patua+One|Raleway" rel="stylesheet">
+
+<body>
+  <div class="wrapper">	
+	<h1>Hubway Bikeshare Data Exploration </h1>
+	<p> The graphs below enable you to explore Hubway's data, as made available for a data challenge. Click a bubble in the bubble chart to update the bar and pie graph with station-specific information. The bubble chart on the left represents three days worth of trip data, sorted by the stations where bikes were rented from. The colors correspond to the different areas around Boston where the stations are located. If you click on a station, the bar and pie charts will update to show trip activity for the specific station. </p>
+	 
+	<div id="bubble" class="vis"></div>
+	<div id="bar" class="vis"></div>
+	<div id="pie" class="vis"></div>
+  </div>
+  <footer>Lab 3 - CS4802 C17 || F.Heaney &amp; R.Murphy || Data provided by Hubway Data Challenge</footer>
+</body>
+
+<script src = "tooltip.js"></script>
+<script src = "nestData.js"></script>
+<script>
+//Create the dispatch and load the complete CSV file
+var dispatch = d3.dispatch("load", "stateChange");
+d3.csv("data/barAndPie.csv", function(error,data){
+  if(error) throw error;
+  var stationData = allStations(data);
+  dispatch.load(stationData);
+}); 
+
+</script>
+<script src = "bubbleChart.js"></script>
+<script src = "barChart.js"></script>
+<script src = "pieChart.js"></script>
+
+
