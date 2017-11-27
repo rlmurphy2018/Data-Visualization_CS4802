@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<style> /* set the CSS */
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div><b> Rachel Murphy:
+Plot 1/10 Using D3 </b></div>
+
+<!-- load the d3.js library -->    	
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+// set the dimensions and margins of the graph
+// give plenty of room in the margins to add in axis lables later
+var margin = {top: 100, right: 100, bottom: 100, left: 100},
+    width = 550 - margin.left - margin.right,
+    height = 550 - margin.top - margin.bottom;
+
+
+
+// set the ranges for values on the axis
+// x axis = weight
+// y axis = MPG
+var x = d3.scaleLinear()
+  .domain([1000, 6000])
+  .range([10, width]);
+
+var y = d3.scaleLinear()
+  .domain([8, 500])
+  .range([height, 10]);
+
+//create color scale
+// array of 10 strings of RGB color
+var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+// append the svg obgect to the body of the page
+// appends a 'group' (g) element to 'svg'
+// moves the 'group' element to the top left margin
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+  
+
+// Get the data - import csv file
+d3.csv("cars-sample.csv", function(error, data) {
+  if (error) throw error;
+
+  // format the data
+  data.forEach(function(d) {
+      d.Car = +d.Car; // each point
+      //d.Manufacturer = +d.Manufacturer; // color variation// not necessary
+      d.MPG = +d.MPG; // y axis
+      d.Weight = +d.Weight; // x axis
+  });
+
+  // scale the range of the data
+ x.domain(d3.extent(data, function(d) { return d.Weight; })).nice();
+ y.domain([8, d3.max(data, function(d) { return d.MPG; })]).nice();  //set y domain to 8 so  no points overlap the x-axis
+ //.nice rounds to a 'nicer' number for the extend of the data
+
+  // value representation / dot representation
+  svg.selectAll("dot") // uses svg 'dot' elements
+      .data(data)
+    .enter().append("circle")
+    // radius of point varies by car weight
+      .attr("r", function(d) {return Math.sqrt(d.Weight/31.4)}) // size of dot by weight // use square root scale to keep proportions
+      .attr("cx", function(d) { return x(d.Weight); }) // location on x-axis
+      .attr("cy", function(d) { return y(d.MPG); })// location on y-axis
+      .attr("fill", function(d) {return color(d.Manufacturer); }) // color of dot by manufacture
+      .style("opacity", 0.5)// all dots should have 50% transparency
+
+  // Add the X Axis
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x)
+        .tickValues([2000,3000,4000,5000])
+       );
+        
+  // Add the Y Axis
+  svg.append("g")
+      .call(d3.axisLeft(y)
+        .tickValues([10, 20, 30, 40]));
+
+  // Add labels to x and y axis
+  // x-axis
+  svg.append('text')
+    .attr('text-anchor','middle')
+    .attr('transform','translate('+ (width/2) + ',' +(height+30)+ ')') // centers below the x-axis
+    .text("Weight");
+  //y-axis
+  svg.append('text')
+    .attr("transform","rotate(-90)")
+    .attr('y',0-margin.left+40) // + 40 moves it for aes purposes
+    .attr("x",0-(height/2))
+    .attr('dy',"1em")
+    .style("text-anchor","middle")
+    .text("  MPG");
+
+});
+
+</script>
+</body>
