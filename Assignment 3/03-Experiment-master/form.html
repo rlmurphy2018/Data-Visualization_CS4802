@@ -1,0 +1,58 @@
+<html>
+
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="bar_chart.js"></script>
+    <script src="pie.js"></script>
+    <script src="radial_bar.js"></script>
+    <script src="helper.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css?version=3">
+    <link href="https://fonts.googleapis.com/css?family=Patua+One|Raleway" rel="stylesheet">
+    <div id="form">
+      <form name="lab3" id="lab3">
+        <div class="vis"> 
+          <div id="bar"></div>
+          <label for="bar">Bar chart</label>
+          <input type="number" name="barGuess" id="bar">
+        </div>
+        <div class="vis"> 
+          <div id="radial"></div>
+          <label for="radial">Radial bar chart</label>
+          <input type="number" name="radialGuess" id="radial">
+        </div>
+        <div class="vis"> 
+          <div id="pie"></div>
+          <label for="pie">Pie chart</label>
+          <input type="number" name="pieGuess" id="pie">
+        </div>
+        <br>
+        <div id="next"><input class="button" type="button" value="Next"></div>
+        <div id="submit"><input class="button" type="button" value="Submit"></div>
+      </form>
+    </div>
+    <footer>Lab 3 - CS4802 C17 || F.Heaney &amp; R.Murphy || Experiment based on <a href="http://www.cs.ubc.ca/~tmm/courses/cpsc533c-04-spr/readings/cleveland.pdf">Cleveland &amp; McGill</a></footer>
+  </body>
+
+  <script>
+  var currentDate = new Date();
+  var userId;
+    $(document).ready(function(){
+      randomizeDivs();
+      populateVis();
+      userId = currentDate.getTime(); 
+      $("#submit").toggle()
+    });
+
+    $("#next").click(function(){
+      makeRecord(userId);
+      populateVis();
+      updatePageNum();
+    });
+
+    $("#submit").click(function(){
+      makeRecord(userId);
+      printAllRecords();
+    })
+  </script>
+</html>

@@ -1,0 +1,124 @@
+<html>
+<head>
+</head>
+
+<body>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="styles.css?version=3">
+  <link href="https://fonts.googleapis.com/css?family=Patua+One|Raleway" rel="stylesheet">
+
+  
+  <footer>Lab 3 - CS4802 C17 || F.Heaney &amp; R.Murphy || Experiment based on <a href="http://www.cs.ubc.ca/~tmm/courses/cpsc533c-04-spr/readings/cleveland.pdf">Cleveland &amp; McGill</a></footer>
+	
+
+  <script>
+  var yScale = d3.scale.linear();
+    var waterfallData = [];
+    var margin = 35;
+    var width = 350,
+        height = 350;
+
+    var xs = [
+        {label: "Tomatoes", value: 50},
+        {label: "Potatoes", value: 30},
+        {label: "Gas", value: 90},
+        {label: "Correction", value: -50},
+        {label: "Unplanned", value: 9},
+        {label: "Stuff", value: 20},
+        {label: "Other Stuff", value: 20},
+        {label: "Foo", value: 10}
+    ];
+    var data = [];
+    var n = xs.length;
+    var xDelta = width / n;
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + margin + margin)
+        .attr("height", height + margin + margin)
+        .append("g")
+        .attr("transform", "translate(" + margin + "," + margin + ")");
+
+    // X-axis
+    var x = d3.scale.ordinal()
+        .rangeRoundBands([0, width], 0.05);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+    // Y-axis
+    var y = d3.scale.linear()
+        .range([height, -5]);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(0);
+
+  
+    calculateScale();
+    calculateBars();
+    makeAxisLines();
+
+
+    function calculateScale() {
+
+        // Calculate scale of the y-axis for drawing waterfall bars
+        var max = 0, min = 0, cumSum = 0;
+        xs.forEach(function (d) {
+            cumSum += d.value;
+            if (cumSum < min) {
+                min = cumSum;
+            }
+            if (cumSum > max) {
+                max = cumSum;
+            }
+            data.push({value: d.value, cumulativeSum: cumSum});
+        });
+        y.domain([min, max]);
+        yScale.domain([min, max]).range([0, height]);
+    }
+
+    function calculateBars() {
+
+        // Calculate and add rectangles to the chart
+        svg.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("stroke", "white")
+            .attr("stroke-width", 3)
+            .attr("class", function (d) {
+                return (d.value < 0) ? "negative" : "positive";
+            })
+            .attr("x", function (d, i) {
+                return i * xDelta + margin;
+            })
+            .attr("y", function (d, i) {
+                return (d.value < 0) ? height - yScale(d.cumulativeSum - d.value) : height - yScale(d.cumulativeSum);
+            })
+            .attr("width", function (d) {
+                return xDelta;
+            })
+            .attr("height", function (d) {
+                return yScale(Math.abs(d.value));
+            });
+    }
+
+
+    function makeAxisLines() {
+
+        // Draw x- and y- axis lines
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(" + margin + "," + height + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(" + margin +")")
+            .call(yAxis);
+    }
+	</script>
+</body>
+</html>

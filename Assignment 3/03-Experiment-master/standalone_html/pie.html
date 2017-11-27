@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title> Pie Chart </title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+	<script>
+	var data = [];
+	var comparisons = [];
+	var height = 400;
+	var width = 400;
+	var radius = 200;
+	
+	//generate the random data points for data array
+	for(i=0; i<10; i++){
+		data.push(Math.floor(Math.random() * 100) + 1);
+	}
+
+//generate 2 UNIQUE values from the data array for comparison
+	var options = [0,1,2,3,4,5,6,7,8,9];
+	var firstIndex = Math.floor(Math.random()*9)
+	comparisons.push(data[options[firstIndex]]);
+	options.splice(firstIndex, 1);
+	var secondIndex = Math.floor(Math.random()*8)
+	comparisons.push(data[options[secondIndex]]);
+	
+// check to see what values are being printed
+	console.log(comparisons);
+	console.log(data);	
+
+// create the svg
+		var svg = d3.select("body").append("svg")
+			.attr("width", width)
+			.attr("height", height)
+			.append("g")
+			.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+// outer circle of the pie chart
+		 var arc = d3.svg.arc()
+			.outerRadius(radius)
+			.innerRadius(0);
+
+// generates the pie chart
+		var pie = d3.layout.pie()
+				.sort(null)
+				.value(function (d) {return d;});
+
+// divides the pie chart into 10 separate arcs based on the generated data
+		var g = svg.selectAll(".arc")
+				.data(pie(data))
+				.enter()
+				.append("g")
+				.attr("class", "arc")
+				.attr("fill", "black");
+
+		g.append("path")
+			.attr("d", arc)
+			.attr("stroke", "white") 
+			.attr("stroke-width", "2px")
+		g.append("circle")
+
+
+			
+// appends the data value to the svg - puts the value in the center of each arc
+// don't have this for the final portion		
+
+	comparisons.forEach(function(e){
+		svg.append('circle')
+			.attr('cx', 400)
+			.attr('cy', 200)
+			.attr ('r', 5)
+			.attr("fill", "blue"); 
+
+	}); 
+
+
+</script>
+</body>
+</html>
